@@ -7,20 +7,24 @@ import socket
 from threading import Thread
 import os, sys
 import random
-from RSA import RSA
 import pandas as pd
 
 prKey = (98581262173360837326167111125113695068362686677036762762847714161386363356381, 39432504869344334930466844450045478027093153642958253734301565008685708450381)
 
 class PatientData:
-    def __init__(self, name):
-        self.name = name
+	def __init__(self, name, age, bp, temp, sugar):
+		self.name = name
+		self.age = age
+		self.bp = bp
+		self.temp = temp
+		self.sugar = sugar
+
 
 class Block:
 	def __init__(self, patient, username, prevHash='0', nonce = 0):
 		self.username = username
-		self.data = data
-		self.jsonData = json.dumps(data)
+		self.patient = patient
+		self.jsonData = json.dumps(patient)
 		self.timestamp = datetime.datetime.now().isoformat()
 		self.prevHash = prevHash
 		self.nonce = nonce
@@ -205,8 +209,8 @@ class Admin:                #Miner
 		block_data = data[:msg_size]
 		data = data[msg_size:]
 		password = pickle.loads(block_data)
-		rsa = RSA()
-		password = rsa.getDecryption(password, prKey[0], prKey[1])
+		#rsa = RSA()
+		#password = rsa.getDecryption(password, prKey[0], prKey[1])
 
 		f = open('Users.txt', 'rb')
 		users = pickle.load(f)
