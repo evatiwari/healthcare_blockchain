@@ -1,86 +1,68 @@
-from utils import Block
-import getpass
+from utils import Admin, Block, Users
 import socket
-import pickle, struct
+import pickle
+import struct
+import getpass
+import pandas as pd
+pd.set_option('display.max_columns', None)
+pd.set_option('display.max_rows', None)
+pubKey = (98581262173360837326167111125113695068362686677036762762847714161386363356381, 5)
 
 
-serverPubKey = (98581262173360837326167111125113695068362686677036762762847714161386363356381, 5)
+if __name__ =='__main__':
+    ad = Admin()
+    choicesDict = {
+        '1':'Create New User',
+        '2':'View All Users', 
+        '3':'View Current BlockChain',
+        '4':'View Dexter\'s Wallet Earning'
+    }
 
-username = input("Enter Username: ")
-password = getpass.getpass(prompt="Enter Password: ")
-#rsa = RSA()
-#password = rsa.getEncryption(password, serverPubKey[0], serverPubKey[1])#RSA(password, serverPubKey[0], serverPubKey[1])
-print(password)
-
-sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-sock.connect(('localhost', 5000))
-print('Client has been assigned socket name ', sock.getsockname())
-print(username)
-sock.sendall(username.encode())
-reply = sock.recv(4096)
-print(reply.decode())
-pswd = pickle.dumps(password)
-sock.sendall(struct.pack("L", len(pswd))+pswd)
-
-reply = sock.recv(4096)
-reply = reply.decode()
-if reply == 'Authentication Failed':
-    print('Authentication Failed')
-    exit(1)
-if reply == 'Send Block':
-    print('Authentication Successful, enter Data for block formation')
-
-    items = [
-    { "name": "Expresso"  , "amount": 80},   
-    { "name": "Milk"  , "amount": 15},
-    { "name": "Cafè Late"  , "amount": 55},
-    { "name": "Cafè Mocha"  , "amount": 25},
-    { "name": "Cardamom Tea"  , "amount": 25},
-    { "name": "Ginger Tea"  , "amount": 20},
-    { "name": "Paneer Momos"  , "amount": 75},
-    { "name": "Chicken Chilli Momos"  , "amount": 90},
-    { "name": "Chicken 65"  , "amount": 120},
-    { "name": "Cappuccino"  , "amount": 20},
-    { "name": "Hot Chocolate"  , "amount": 25},
-    ]
-    
-
-    print('''Menu : 
-    1. Expresso 80
-    2. Milk 15
-    3. Cafè Late 55
-    4. Cafè Mocha 25
-    5. Cardamom Tea 25
-    6. Ginger Tea 20
-    7. Paneer Momos 75
-    8. Chicken Chilli Momos 90
-    9. Chicken 65 120
-    10. Cappuccino 20
-    11. Hot Chocolate 25
-    ''')
-    choices=[]
-    n = int(input("Enter Number of the items you want: "))
-    while n:
-        choice= items[int(input("Enter serial number of item: "))-1]
-        choices.append(choice)
-        n-=1
-        
-    f = open('Users.txt', 'rb')
-    users = pickle.load(f)
-    f.close()
-    for user in users:
-        if user.username == username:
-            currUser = user
+    while True:
+        # print(choicesDict)
+        print('1', choicesDict['1'])
+        print('2', choicesDict['2'])
+        print('3', choicesDict['3'])
+        print('4', choicesDict['4'])
+        inp = input("Enter your choice, q to quit: ")
+        if inp=='1':
+            username = input("\tEnter Username: ")
+            f = open('users.txt', 'rb')
+            users = pickle.load(f)
+            f.close()
+            flag = 0
+            for user in users:
+                if user.username.lower() == username.lower():
+                    print("Username already exists!")
+                    flag = 1
+                    break
+            if flag == 1:
+                continue
+            password = getpass.getpass(prompt="\tEnter Password: ")
+            ad.createUser(username, password)
+        elif inp=='2':
+            f = open('Users.txt', 'rb')
+            users = pickle.load(f)
+            df = pd.DataFrame([x.as_dict() for x in users])
+            print("\n",df,"\n")
+            f.close()
+        elif inp=='3':
+            f = open('blockchain.txt', 'rb')
+            blocks = pickle.load(f)
+            f.close()
+            i=0
+            total_amount = 0
+            
+            for block in blocks:
+                i+=1
+                print('\n')
+                print(f'Block {i}: \nBlockUsername: {block.username} \nData: {block.data} \nTime: {block.timestamp} \nCurrent Hash: {block.Hash} \nPrevious Hash: {block.prevHash}')
+                print('\n')
+        elif inp=='4':
+            f= open('wallet.txt','rb')
+            money =int(pickle.load(f))
+            f.close()
+            print(f'\nDexters Current Earning is: {money}\n')
+        elif inp=='q':
             break
-    f = open('BlockChain.txt', 'rb')
-    blocks = pickle.load(f)
-    f.close()
-    prevHash = blocks[-1].Hash
-    block = Block(choices, currUser.username, prevHash)
-    data = pickle.dumps(block)
-    sock.sendall(struct.pack("L", len(data))+data)
-    reply = sock.recv(4096)
-    reply = reply.decode()
-    print(repr(reply))
-
-sock.close()
+    exit(0)

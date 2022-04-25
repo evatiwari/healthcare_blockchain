@@ -42,15 +42,14 @@ class Users:
 		self.password = hashlib.sha256(password.encode()).hexdigest()
 		self.blockChain = []
 		self.serverPubKey = ''
-		self.wallet = 5000
+		#self.wallet = 5000
 	def as_dict(self):
 		return {'      Username': self.username, '        Timestamp': self.timestamp}
 
-	def createBlock(self, data):
-		return Block(data, self.username)
+	def createBlock(self, patient):
+		return Block(patient, self.username)
 
 	def verifyTransaction(self, currentBlock):
-		print("in verify")
 		blocks = self.blockChain
 		print(currentBlock.prevHash)
 		print(blocks[-1].Hash)
@@ -77,42 +76,42 @@ class Admin:                #Miner
 		print("Admin Initiated")
 		sock = self.create_socket(('localhost', 5000))
 		Thread(target=self.start_threads, args=(sock,)).start()
-		if os.stat("BlockChain.txt").st_size == 0:
-			f = open('BlockChain.txt', 'wb')
+		if os.stat("blockchain.txt").st_size == 0:
+			f = open('blockchain.txt', 'wb')
 			block = Block("Genesis", 'admin')
 			pickle.dump([block], f)
 			f.close()
-		if os.stat("Users.txt").st_size == 0:
-			f = open('Users.txt', 'wb')
+		if os.stat("users.txt").st_size == 0:
+			f = open('users.txt', 'wb')
 			user = self.createUser('Dexter', 'admin')
 			pickle.dump([user], f)
 			f.close()
-		if os.stat("Dexter_Wallet.txt").st_size == 0:
-			f = open('Dexter_Wallet.txt', 'wb')
+		if os.stat("wallet.txt").st_size == 0:
+			f = open('wallet.txt', 'wb')
 			pickle.dump("0", f)
 			f.close()
 
 	def createUser(self, username, password):
 		print("Inside createUser")
 		user = Users(username, password)
-		if not os.stat("BlockChain.txt").st_size == 0:
-			f = open('BlockChain.txt', 'rb')
+		if not os.stat("blockchain.txt").st_size == 0:
+			f = open('blockchain.txt', 'rb')
 			blocks = pickle.load(f)
 			f.close()
 			user.blockChain = blocks
 		# print(user.username, user.password)
-		if not os.stat("Users.txt").st_size == 0:
-			f = open('Users.txt', 'rb')
+		if not os.stat("users.txt").st_size == 0:
+			f = open('users.txt', 'rb')
 			users = pickle.load(f)
 			f.close()
 			users.append(user)
-			f = open('Users.txt', 'wb')
+			f = open('users.txt', 'wb')
 			pickle.dump(users, f)
 			f.close()
 		return user
 
 	def checkData(self, block):
-		f = open('Users.txt','rb')
+		f = open('users.txt','rb')
 		users = pickle.load(f)
 		f.close()
 		transactbool = 0
@@ -135,7 +134,7 @@ class Admin:                #Miner
 		for transaction in block.data:
 			# print('hello')
 			amount+=transaction['amount']
-		f = open('Dexter_Wallet.txt', 'rb')
+		f = open('wallet.txt', 'rb')
 		money = int(pickle.load(f))
 		f.close()
 		# print('\n\nCurrent money for Dexter is ', money, '\n\n')
