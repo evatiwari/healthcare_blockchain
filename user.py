@@ -1,4 +1,4 @@
-from utils import Block
+from utils import Block, PatientData
 import getpass
 import socket
 import pickle, struct
@@ -30,49 +30,22 @@ if reply == 'Authentication Failed':
 if reply == 'Send Block':
     print('Authentication Successful, enter Data for block formation')
 
-    items = [
-    { "name": "Expresso"  , "amount": 80},   
-    { "name": "Milk"  , "amount": 15},
-    { "name": "Cafè Late"  , "amount": 55},
-    { "name": "Cafè Mocha"  , "amount": 25},
-    { "name": "Cardamom Tea"  , "amount": 25},
-    { "name": "Ginger Tea"  , "amount": 20},
-    { "name": "Paneer Momos"  , "amount": 75},
-    { "name": "Chicken Chilli Momos"  , "amount": 90},
-    { "name": "Chicken 65"  , "amount": 120},
-    { "name": "Cappuccino"  , "amount": 20},
-    { "name": "Hot Chocolate"  , "amount": 25},
-    ]
-    
-
-    print('''Menu : 
-    1. Expresso 80
-    2. Milk 15
-    3. Cafè Late 55
-    4. Cafè Mocha 25
-    5. Cardamom Tea 25
-    6. Ginger Tea 20
-    7. Paneer Momos 75
-    8. Chicken Chilli Momos 90
-    9. Chicken 65 120
-    10. Cappuccino 20
-    11. Hot Chocolate 25
-    ''')
-    choices=[]
-    n = int(input("Enter Number of the items you want: "))
-    while n:
-        choice= items[int(input("Enter serial number of item: "))-1]
-        choices.append(choice)
-        n-=1
+    print("Enter the patient's details:")
+    name=input("Name:")
+    age=input("Age:")
+    bp=input("Blood pressure:")
+    temp=input("Temperature:")
+    sugar=input("Current blood sugar levels:")
+    patient=PatientData(name, age, bp, temp, sugar)
         
-    f = open('Users.txt', 'rb')
+    f = open('users.txt', 'rb')
     users = pickle.load(f)
     f.close()
     for user in users:
         if user.username == username:
             currUser = user
             break
-    f = open('BlockChain.txt', 'rb')
+    f = open('blockchain.txt', 'rb')
     blocks = pickle.load(f)
     f.close()
     prevHash = blocks[-1].Hash

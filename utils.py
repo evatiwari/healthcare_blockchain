@@ -134,28 +134,21 @@ class Admin:                #Miner
 		for transaction in block.data:
 			# print('hello')
 			amount+=transaction['amount']
-		f = open('wallet.txt', 'rb')
-		money = int(pickle.load(f))
-		f.close()
-		# print('\n\nCurrent money for Dexter is ', money, '\n\n')
-		f = open('Dexter_Wallet.txt','wb')
-		pickle.dump(str(money+amount), f)
-		f.close()
-		f = open('BlockChain.txt', 'rb')
+		f = open('blockchain.txt', 'rb')
 		blocks = pickle.load(f)
 		f.close()
 		blocks.append(block)
-		f = open('BlockChain.txt', 'wb')
+		f = open('blockchain.txt', 'wb')
 		pickle.dump(blocks, f)
 		f.close()
-		f = open('Users.txt', 'rb')
+		f = open('users.txt', 'rb')
 		users = pickle.load(f)
 		f.close()
 		for i in range(0,len(users)):
 			users[i].blockChain = blocks
 			if(users[i].username == block.username):
 				users[i].wallet-=amount
-		f = open('Users.txt', 'wb')
+		f = open('users.txt', 'wb')
 		pickle.dump(users, f)
 		f.close()
 		return
@@ -182,7 +175,7 @@ class Admin:                #Miner
 		data = sock.recv(4096)
 		username = data.decode()
 		print(username)
-		f = open('Users.txt', 'rb')
+		f = open('users.txt', 'rb')
 		users = pickle.load(f)
 		f.close()
 		currUser = ''
@@ -264,7 +257,6 @@ class Admin:                #Miner
 		while block.Hash[:difficulty] != '0'*difficulty:
 			block.nonce+=1
 			block.Hash = block.calculateHash()
-		# print('hello ',block.nonce, block.Hash)
 		finalHash = block.Hash.upper()
 		block.Hash = finalHash
 		return 
