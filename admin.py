@@ -19,7 +19,6 @@ if __name__ == '__main__':
     }
 
     while True:
-        # print(choicesDict)
         print('1', choicesDict['1'])
         print('2', choicesDict['2'])
         print('3', choicesDict['3'])

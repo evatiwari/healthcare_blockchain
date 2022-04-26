@@ -50,29 +50,21 @@ class Users:
         self.timestamp = datetime.datetime.now().isoformat()
         self.username = username
         self.password = hashlib.sha256(password.encode()).hexdigest()
-        self.blockChain = []
         self.serverPubKey = ''
 
     def as_dict(self):
         return {'      Username': self.username, '        Timestamp': self.timestamp}
 
-    def createBlock(self, patient):
-        return Block(patient, self.username)
+    def createBlock(self, patient, prevHash):
+        return Block(patient.toJSON(), self.username, prevHash)
 
     def verifyTransaction(self, currentBlock):
-        blocks = self.blockChain
-        print(currentBlock.prevHash)
-        print(blocks[-1].Hash)
+        f = open('blockchain.txt', 'rb')
+        blocks = pickle.load(f)
+        f.close()
         if currentBlock.prevHash == blocks[-1].Hash:
             return True
         return False
-
-    def verifyBlockChain(self):
-        blocks = self.blockChain
-        for i in range(1, len(blocks)):
-            if blocks[i].prevHash != blocks[i-1].Hash:
-                return False
-        return True
 
     def verifyPoW(self, block):
         date_int = re.sub('\D', '', block.timestamp)
@@ -96,10 +88,6 @@ class Admin:  # Miner
             f = open('users.txt', 'wb')
             user = self.createUser('Dexter', 'admin')
             pickle.dump([user], f)
-            f.close()
-        if os.stat("wallet.txt").st_size == 0:
-            f = open('wallet.txt', 'wb')
-            pickle.dump("0", f)
             f.close()
 
     def createUser(self, username, password):
@@ -126,17 +114,16 @@ class Admin:  # Miner
         f.close()
         transactbool = 0
         hashbool = 0
-        print("here")
         for i in range(0, len(users)):
-            #transact = users[i].verifyTransaction(block)
+            transact = users[i].verifyTransaction(block)
             hashing = users[i].verifyPoW(block)
-            # if transact:
-            #transactbool += 1
+            if transact:
+                transactbool += 1
             if hashing:
                 hashbool += 1
-        print(transactbool, hashbool)
-        if hashbool > len(users)/2:
-            # and transactbool > len(users)/2:
+        print(
+            f"transactions verified by: {transactbool}, POW verified by: {hashbool}")
+        if hashbool > len(users)/2 and transactbool > len(users)/2:
             return True
         return False
 
@@ -254,7 +241,7 @@ class Admin:  # Miner
 
         if not toProceed:
             return False
-        print("PoW done by miner verified by consensus of users")
+        print("Zero knowledge proof verified by consensus of users")
         self.addBlock(block)
         sock.sendall('Block has been added to the BlockChain'.encode())
         return True
@@ -264,12 +251,10 @@ class Admin:  # Miner
             block.nonce += 1
             block.Hash = block.calculateHash()
         finalHash = block.Hash.upper()
-        print(str(finalHash))
         block.Hash = finalHash
         return
 
     def start_threads(self, listener, workers=4):
-        print("here")
         t = (listener,)
         for i in range(workers):
             Thread(target=self.accept_forever, args=t).start()

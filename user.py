@@ -49,7 +49,7 @@ if reply == 'Send Block':
     blocks = pickle.load(f)
     f.close()
     prevHash = blocks[-1].Hash
-    block = Block(patient.toJSON(), currUser.username, prevHash)
+    block = currUser.createBlock(patient, prevHash)
     data = pickle.dumps(block)
     sock.sendall(struct.pack("L", len(data))+data)
     reply = sock.recv(4096)
