@@ -1,5 +1,4 @@
 # imports here
-from imghdr import what
 import random
 
 # On client side
@@ -16,8 +15,8 @@ def zkp(x):
         random_generated_constant = (generator ** random_int) % prime_number
         answer_with_x = (random_int + x) % (prime_number-1)
         answer_with_random_int = (random_int) % (prime_number-1)
-        verify = verify_with_zkp(
-            answer_with_x, answer_with_random_int, y, random_generated_constant, prime_number, generator)
+        verify = verify_with_zkp(answer_with_x, answer_with_random_int,
+                                 y, random_generated_constant, prime_number, generator)
         all_rounds_verified = verify & all_rounds_verified
     return verify
 
