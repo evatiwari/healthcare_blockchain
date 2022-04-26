@@ -81,4 +81,5 @@ if __name__ == '__main__':
                         f'Block {i}: \nBlockUsername: {block.username} \nTime: {block.timestamp} \nCurrent Hash: {block.Hash} \nPrevious Hash: {block.prevHash}')
                     print('\n')
         elif inp == 'q':
-            exit(0)
+            break
+    exit()

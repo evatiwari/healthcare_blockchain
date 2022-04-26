@@ -10,8 +10,6 @@ serverPubKey = (
 
 username = input("Enter Username: ")
 password = getpass.getpass(prompt="Enter Password: ")
-print(password)
-
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sock.connect(('localhost', 5000))
 print('Client has been assigned socket name ', sock.getsockname())
