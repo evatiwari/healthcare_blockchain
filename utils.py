@@ -97,10 +97,6 @@ class Admin:  # Miner
             user = self.createUser('Dexter', 'admin')
             pickle.dump([user], f)
             f.close()
-        if os.stat("wallet.txt").st_size == 0:
-            f = open('wallet.txt', 'wb')
-            pickle.dump("0", f)
-            f.close()
 
     def createUser(self, username, password):
         print("Inside createUser")
