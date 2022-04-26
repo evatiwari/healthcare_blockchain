@@ -1,3 +1,4 @@
+import datetime
 prime = 31
 rems = []
 pow = 1
@@ -10,3 +11,4 @@ while len(rems) < prime-1:
         print("Added ${{1}} at value {2}", remain, pow)
 
 # 11 and 2 | 23 and 5 | 31 and 3
+print(datetime.datetime.now().isoformat())
