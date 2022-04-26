@@ -17,12 +17,14 @@ if __name__ == '__main__':
         '1': 'Create New User',
         '2': 'View All Users',
         '3': 'View Current BlockChain',
+        '4': 'View user specific transactions'
     }
 
     while True:
         print('1', choicesDict['1'])
         print('2', choicesDict['2'])
         print('3', choicesDict['3'])
+        print('4', choicesDict['4'])
         inp = input("Enter your choice, q to quit: ")
         if inp == '1':
             username = input("\tEnter Username: ")
@@ -58,6 +60,25 @@ if __name__ == '__main__':
                 print(
                     f'Block {i}: \nBlockUsername: {block.username} \nTime: {block.timestamp} \nCurrent Hash: {block.Hash} \nPrevious Hash: {block.prevHash}')
                 print('\n')
+        elif inp == '4':
+            f = open('users.txt', 'rb')
+            users = pickle.load(f)
+            df = pd.DataFrame([x.as_dict() for x in users])
+            print("\n", df, "\n")
+            f.close()
+            chosenUser = int(input("Enter user number to view transactions: "))
+
+            uname = users[chosenUser].username
+            f = open('blockchain.txt', 'rb')
+            blocks = pickle.load(f)
+            f.close()
+            i = 0
+            for block in blocks:
+                i += 1
+                if(block.username == uname):
+                    print('\n')
+                    print(
+                        f'Block {i}: \nBlockUsername: {block.username} \nTime: {block.timestamp} \nCurrent Hash: {block.Hash} \nPrevious Hash: {block.prevHash}')
+                    print('\n')
         elif inp == 'q':
-            break
-    exit(0)
+            exit(0)

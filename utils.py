@@ -81,7 +81,7 @@ class Admin:  # Miner
         Thread(target=self.start_threads, args=(sock,)).start()
         if os.stat("blockchain.txt").st_size == 0:
             f = open('blockchain.txt', 'wb')
-            block = Block("Genesis", 'admin')
+            block = Block("Genesis", 'Dexter')
             pickle.dump([block], f)
             f.close()
         if os.stat("users.txt").st_size == 0:
