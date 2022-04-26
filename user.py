@@ -10,7 +10,7 @@ username = input("Enter Username: ")
 password = getpass.getpass(prompt="Enter Password: ")
 #rsa = RSA()
 #password = rsa.getEncryption(password, serverPubKey[0], serverPubKey[1])#RSA(password, serverPubKey[0], serverPubKey[1])
-print(password)
+#print(password)
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sock.connect(('localhost', 5000))
@@ -49,7 +49,7 @@ if reply == 'Send Block':
     blocks = pickle.load(f)
     f.close()
     prevHash = blocks[-1].Hash
-    block = Block(choices, currUser.username, prevHash)
+    block = Block(patient, currUser.username, prevHash)
     data = pickle.dumps(block)
     sock.sendall(struct.pack("L", len(data))+data)
     reply = sock.recv(4096)

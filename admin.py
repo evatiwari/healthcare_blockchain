@@ -4,6 +4,7 @@ import pickle
 import struct
 import getpass
 import pandas as pd
+import sys
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 pubKey = (98581262173360837326167111125113695068362686677036762762847714161386363356381, 5)
@@ -54,8 +55,16 @@ if __name__ =='__main__':
             for block in blocks:
                 i+=1
                 print('\n')
-                print(f'Block {i}: \nBlockUsername: {block.username} \nData: {block.data} \nTime: {block.timestamp} \nCurrent Hash: {block.Hash} \nPrevious Hash: {block.prevHash}')
-                print('\n')
+                #print(f'Block {i}: \nBlockUsername: {block.username} \nData: {block.data} \nTime: {block.timestamp} \nCurrent Hash: {block.Hash} \nPrevious Hash: {block.prevHash}')
+                print(f'Block {i}:\n')
+                #print(f'BlockUsername: {block.username}\n')
+                #print(f'BlockUsername: {block.patient.name}\n')
+                #print(f'BlockUsername: {block.patient.age}\n')
+                #print(f'BlockUsername: {block.patient.bp}\n')
+                #print(f'BlockUsername: {block.patient.temp}\n')
+                #print(f'BlockUsername: {block.patient.sugar}\n')
+                print(f'BlockUsername: {block.timestamp}\n')
+                print(f'BlockUsername: {block.Hash}\n')
+                print(f'BlockUsername: {block.prevHash}\n')
         elif inp=='q':
-            break
-    exit(0)
+            sys.exit(0)
